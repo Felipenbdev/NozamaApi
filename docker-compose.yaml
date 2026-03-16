@@ -17,6 +17,6 @@ services:
     depends_on:
       - mongodb
     environment:
-      - SPRING_MONGODB_URI=mongodb://localhost:27017/nozama
+      - SPRING_MONGODB_URI=${MONGO_URI}
 volumes:
   mongo-data:
