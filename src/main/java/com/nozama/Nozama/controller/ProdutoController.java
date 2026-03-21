@@ -14,12 +14,15 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class ProdutoController {
 
-    @Autowired
     private ProductRepository productRepository;
 
+    public ProdutoController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
     @PostMapping
-    public Product save(@RequestBody Product product) {
-        return productRepository.save(product);
+    public ResponseEntity<Product> save(@RequestBody Product product) {
+        return ResponseEntity.status(201).body(productRepository.save(product));
     }
 
     @GetMapping
@@ -27,21 +30,28 @@ public class ProdutoController {
         return productRepository.findAll();
     }
 
-    @GetMapping("/{id})")
-    public ResponseEntity<Product> findById(@RequestParam String id){
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> findById(@PathVariable String id){
         return productRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id){
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        if (!productRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         productRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public Product update(@PathVariable String id, @RequestBody Product product){
+    public ResponseEntity<Product> update(@PathVariable String id, @RequestBody Product product) {
+        if (!productRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         product.setId(id);
-        return productRepository.save(product);
+        return ResponseEntity.ok(productRepository.save(product));
     }
 }

@@ -3,4 +3,4 @@ server:
 
 spring:
   mongodb:
-    uri: mongodb://localhost:27017/nozama
+    uri: ${MONGO_URI:mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_DATABASE}}
